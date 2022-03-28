@@ -2,7 +2,10 @@
 title: "Clustering"
 author: "Edo Danilyan"
 date: '2022-03-27'
-output: html_document
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r}
@@ -23,10 +26,10 @@ plot(hierar_datahimat, main = "Dendogram Cars")
 # Hierarchial clustering
 
 ```{r, echo=FALSE}
+library(factoextra)
 head(mtcars)
 ?mtcars
 View(mpg)
-as.data.frame(mpgtry)
 mpg |>
   filter(manufacturer %in% c("audi", "dogde", "ford"))
 mpgtry <- mpg |>
@@ -38,11 +41,14 @@ distance_mat <- dist(mtcars, method = 'euclidean')
 set.seed(240)
 Hierar_cl <- hclust(distance_mat, method = "complete")
 plot(Hierar_cl, main = "Dendogram Cars")
+rect.hclust(Hierar_cl, k = 3, border = 2:4)
+
 ```
 
-# Inout manual: data mie instan di indo
+# Input manual: data mie instan di indo
 
 ```{r}
+
 
 mie_instan <- data.frame(nama = c("Indomie rendang", "Indomie soto", "Indomie kari", "Sedap goreng", "Sedap soto", "sedap kari"),
                          kuah = c(0, 1, 1, 0, 1, 1),
@@ -58,4 +64,35 @@ plot(clust_mie)
 
 ```
 
+# Iris Data
+```{r}
+iris
+iris_labels <- iris$Species
+table(iris_labels)
+
+# Data
+iris_data <- iris[1:4]
+
+# Scaling
+iris_data_std <- scale(iris_data)
+
+# Distance
+iris_dist <- dist(iris_data_std)
+
+# Hierarchical clustering
+hc_out_iris <- hclust(iris_dist, method = "complete")
+hc_out_iris
+
+# Dendogram
+plot(hc_out_iris)
+rect.hclust(hc_out_iris, k = 3, border = 2:5)
+
+# Clusters
+iris_clusters <- cutree(hc_out_iris, k = 3)
+
+# Visual
+rownames(iris_data_std) <- paste(iris$Species, 1:dim(iris)[1], sep ="_")
+fviz_cluster(list(data = iris_data_std, cluster = iris_clusters), ellipse.type = "norm", ggtheme = theme_minimal(), palette = "Set2")
+
+```
 
